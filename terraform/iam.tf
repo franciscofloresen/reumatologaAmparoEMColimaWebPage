@@ -36,6 +36,11 @@ resource "aws_iam_role_policy" "reservation_policy" {
         Effect   = "Allow"
         Action   = ["ssm:GetParameter"]
         Resource = "arn:aws:ssm:*:*:parameter/reumatologia-app/google-*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["sns:Publish"]
+        Resource = aws_sns_topic.reservations.arn
       }
     ]
   })
