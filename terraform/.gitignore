@@ -1,0 +1,14 @@
+# Terraform files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!terraform.tfvars.example
+.terraform.lock.hcl
+
+# Lambda zip
+lambda/*.zip
+
+# OS files
+.DS_Store
+credentials.json

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar Cita - Dra. María Amparo Enríquez Maldonado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm border-b">
+        <div class="container mx-auto px-6 py-4">
+            <a href="/" class="text-xl font-bold text-blue-800">← Volver al Inicio</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Reservar Cita</h1>
+                <p class="text-gray-600 mb-8">Complete el formulario para solicitar su cita</p>
+
+                <div id="successMessage" class="hidden bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6">
+                    ✓ Cita solicitada exitosamente. Nos pondremos en contacto pronto.
+                </div>
+
+                <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6"></div>
+
+                <form id="appointmentForm" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nombre *</label>
+                            <input type="text" id="firstName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Apellido *</label>
+                            <input type="text" id="lastName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono *</label>
+                        <input type="tel" id="phone" required pattern="[0-9+\-\s()]+" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Fecha Preferida *</label>
+                            <input type="date" id="preferredDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <p id="dayInfo" class="text-xs text-gray-500 mt-1"></p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Hora Preferida *</label>
+                            <select id="preferredTime" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Seleccione una fecha primero</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Consulta *</label>
+                        <select id="consultationType" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Seleccione...</option>
+                            <option value="primera-vez">Primera Vez</option>
+                            <option value="seguimiento">Seguimiento</option>
+                            <option value="urgente">Urgente</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Motivo de Consulta</label>
+                        <textarea id="reason" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300">
+                        Solicitar Cita
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('preferredDate').setAttribute('min', today);
+
+        // Available time slots by day of week (30-minute intervals)
+        const availableSlots = {
+            0: ['16:30', '17:00', '17:30', '18:00'], // Monday (last slot 6pm, ends 6:30pm)
+            1: ['18:30', '19:00'], // Tuesday (last slot 7pm, ends 7:30pm)
+            2: ['16:30', '17:00', '17:30', '18:00'], // Wednesday
+            3: ['18:30', '19:00'], // Thursday
+            4: ['17:00', '17:30', '18:00', '18:30', '19:00'], // Friday (last slot 7pm, ends 7:30pm)
+            5: ['11:00', '11:30', '12:00', '12:30', '13:00'], // Saturday (last slot 1pm, ends 1:30pm)
+            6: [] // Sunday
+        };
+
+        const dayNames = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        const scheduleInfo = {
+            0: 'Lunes: 4:30 PM - 6:00 PM',
+            1: 'Martes: 6:30 PM - 7:30 PM',
+            2: 'Miércoles: 4:30 PM - 6:00 PM',
+            3: 'Jueves: 6:30 PM - 7:30 PM',
+            4: 'Viernes: 5:00 PM - 7:30 PM',
+            5: 'Sábado: 11:00 AM - 1:30 PM',
+            6: 'Domingo: No disponible'
+        };
+
+        document.getElementById('preferredDate').addEventListener('change', async function() {
+            const selectedDate = new Date(this.value + 'T00:00:00');
+            const dayOfWeek = selectedDate.getDay();
+            const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Convert Sunday=0 to 6
+            
+            const timeSelect = document.getElementById('preferredTime');
+            const dayInfo = document.getElementById('dayInfo');
+            
+            dayInfo.textContent = scheduleInfo[adjustedDay];
+            
+            if (!availableSlots[adjustedDay] || availableSlots[adjustedDay].length === 0) {
+                timeSelect.innerHTML = '<option value="">No hay horarios disponibles este día</option>';
+                timeSelect.disabled = true;
+                dayInfo.classList.add('text-red-600');
+                dayInfo.classList.remove('text-green-600');
+                return;
+            }
+            
+            dayInfo.classList.add('text-green-600');
+            dayInfo.classList.remove('text-red-600');
+            timeSelect.disabled = false;
+            timeSelect.innerHTML = '<option value="">Cargando horarios...</option>';
+            
+            try {
+                const dateStr = this.value;
+                const API_URL = 'https://mpwzml63ql.execute-api.us-east-1.amazonaws.com';
+                const response = await fetch(`${API_URL}/availability?date=${dateStr}`);
+                
+                let bookedTimes = [];
+                if (response.ok) {
+                    const data = await response.json();
+                    bookedTimes = data.bookedTimes || [];
+                }
+
+                timeSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+                let hasAvailableSlot = false;
+
+                availableSlots[adjustedDay].forEach(time => {
+                    if (!bookedTimes.includes(time)) {
+                        const option = document.createElement('option');
+                        option.value = time;
+                        option.textContent = time;
+                        timeSelect.appendChild(option);
+                        hasAvailableSlot = true;
+                    }
+                });
+
+                if (!hasAvailableSlot) {
+                    timeSelect.innerHTML = '<option value="">Todos los horarios están reservados este día</option>';
+                    timeSelect.disabled = true;
+                }
+            } catch (err) {
+                console.error("Error fetching availability:", err);
+                timeSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+                availableSlots[adjustedDay].forEach(time => {
+                    const option = document.createElement('option');
+                    option.value = time;
+                    option.textContent = time;
+                    timeSelect.appendChild(option);
+                });
+            }
+        });
+
+        document.getElementById('appointmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+            successMsg.classList.add('hidden');
+            errorMsg.classList.add('hidden');
+
+            const data = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                preferredDate: document.getElementById('preferredDate').value,
+                preferredTime: document.getElementById('preferredTime').value,
+                consultationType: document.getElementById('consultationType').value,
+                reason: document.getElementById('reason').value.trim()
+            };
+
+            try {
+                const API_ENDPOINT = 'https://mpwzml63ql.execute-api.us-east-1.amazonaws.com/reservations';
+                
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    successMsg.textContent = `✓ Cita confirmada para ${result.date} a las ${result.time}. ${data.email ? 'Revise su correo para más detalles.' : 'Recibirá confirmación pronto.'}`;
+                    successMsg.classList.remove('hidden');
+                    document.getElementById('appointmentForm').reset();
+                    document.getElementById('dayInfo').textContent = '';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    errorMsg.textContent = result.error || 'Error al procesar la solicitud';
+                    errorMsg.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Error de conexión. Intente nuevamente.';
+                errorMsg.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Solicitar Cita';
+            }
+        });
+    </script>
+</body>
+</html>

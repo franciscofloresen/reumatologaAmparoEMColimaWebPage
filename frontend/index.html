@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dra. María Amparo Enríquez Maldonado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7faff; /* Un azul muy claro como fondo */
+        }
+        /* Animación de entrada para secciones */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Animación para burbujas del chat */
+        .chat-bubble {
+            animation: bubble-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        @keyframes bubble-in {
+            from { opacity: 0; transform: scale(0.5) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        /* Patrón de fondo sutil para la sección hero */
+        .hero-pattern-bg {
+            background-color: #ffffff;
+            background-image: radial-gradient(#dbeafe 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+<!-- Header con diseño azul -->
+<header id="header" class="bg-white/80 backdrop-blur-xl fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-gray-200/80">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="#" class="text-xl font-bold text-blue-800 tracking-wide">Dra. María Amparo Enríquez Maldonado.</a>
+        <nav class="hidden md:flex items-center space-x-6">
+            <a href="#inicio" class="text-gray-600 hover:text-blue-600 transition-colors duration-300">Inicio</a>
+            <a href="#sobre-mi" class="text-gray-600 hover:text-blue-600 transition-colors duration-300">Sobre Mí</a>
+            <a href="#servicios" class="text-gray-600 hover:text-blue-600 transition-colors duration-300">Servicios</a>
+            <a href="#contacto" class="text-gray-600 hover:text-blue-600 transition-colors duration-300">Contacto</a>
+            <a href="reservations.html" class="bg-blue-600 text-white font-semibold px-5 py-2 rounded-full shadow-md hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">Reservar Cita</a>
+            <a href="login.html" class="text-gray-600 hover:text-blue-600 transition-colors duration-300">Admin</a>
+        </nav>
+        <button id="mobile-menu-button" class="md:hidden text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+    </div>
+    <!-- Menú Móvil -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+        <a href="#inicio" class="block py-3 px-6 text-sm text-gray-700 hover:bg-blue-50">Inicio</a>
+        <a href="#sobre-mi" class="block py-3 px-6 text-sm text-gray-700 hover:bg-blue-50">Sobre Mí</a>
+        <a href="#servicios" class="block py-3 px-6 text-sm text-gray-700 hover:bg-blue-50">Servicios</a>
+        <a href="#contacto" class="block py-3 px-6 text-sm text-gray-700 hover:bg-blue-50">Contacto</a>
+        <div class="p-4">
+            <a href="reservations.html" class="block text-center w-full bg-blue-600 text-white font-semibold px-5 py-2 rounded-full shadow-md hover:bg-blue-700 transition-all duration-300">Reservar Cita</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- Sección Hero rediseñada (Opción Azul) -->
+    <section id="inicio" class="pt-28 md:pt-36 pb-16 hero-pattern-bg">
+        <div class="container mx-auto px-6 flex flex-col-reverse md:flex-row gap-10 items-center">
+            <div class="md:w-1/2 text-center md:text-left">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
+                    Bienestar y Salud Articular
+                    <span class="block text-blue-600 mt-2">a tu alcance en Colima.</span>
+                </h1>
+                <p class="mt-5 text-lg text-gray-600 max-w-lg mx-auto md:mx-0">
+                    Atención especializada en reumatología con un enfoque humano y personalizado. Juntos, encontraremos el camino hacia una vida más activa y sin dolor.
+                </p>
+                <div class="mt-8 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+                    <a href="reservations.html" class="bg-blue-600 text-white font-bold px-8 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
+                        Agendar una Cita
+                    </a>
+                    <a href="#servicios" class="bg-blue-100 text-blue-700 font-bold px-8 py-3 rounded-full hover:bg-blue-200 transition-all duration-300 transform hover:scale-105">
+                        Ver Padecimientos
+                    </a>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center items-center">
+                <div class="relative w-full max-w-md">
+                    <div class="absolute top-0 -left-4 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+                    <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+                    <img src="images/WhatsApp Image 2025-10-12 at 13.36.48.jpeg" alt="Foto de la Dra. María Amparo Enríquez Maldonado" class="relative rounded-2xl shadow-2xl w-full h-auto object-cover border-8 border-white">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Sobre Mí rediseñada -->
+    <section id="sobre-mi" class="py-24 fade-in-section">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold text-gray-900">Dra. María Amparo Enríquez Maldonado</h2>
+            <p class="text-xl text-blue-600 font-medium mb-10">Reumatóloga Certificada</p>
+            <div class="max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
+                <p class="text-gray-700 text-lg leading-relaxed">
+                    Con una sólida formación en medicina interna y reumatología, mi misión es ofrecer un diagnóstico preciso y un tratamiento efectivo para las enfermedades autoinmunes y musculoesqueléticas. Mi enfoque se centra en la empatía y la comunicación, creando un plan de tratamiento en conjunto con mis pacientes para mejorar su salud y bienestar. Comprometida con la actualización médica continua para brindar la mejor atención posible aquí en Colima.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Servicios con nuevo diseño -->
+    <section id="servicios" class="py-24 bg-white fade-in-section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900">Padecimientos Atendidos</h2>
+                <p class="mt-3 text-lg text-gray-600">Atención especializada para una amplia gama de condiciones reumáticas.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Tarjeta de Servicio con nuevo estilo -->
+                <div class="group relative bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-blue-100 text-blue-600 rounded-lg h-12 w-12 flex-shrink-0 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Artritis Reumatoide</h3>
+                    </div>
+                    <p class="mt-4 text-gray-600">Diagnóstico temprano y manejo integral para controlar la inflamación y proteger las articulaciones.</p>
+                </div>
+                <div class="group relative bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-blue-100 text-blue-600 rounded-lg h-12 w-12 flex-shrink-0 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Lupus Eritematoso</h3>
+                    </div>
+                    <p class="mt-4 text-gray-600">Tratamiento personalizado para controlar los síntomas y prevenir complicaciones en esta enfermedad autoinmune.</p>
+                </div>
+                <div class="group relative bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-blue-100 text-blue-600 rounded-lg h-12 w-12 flex-shrink-0 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A8 8 0 0117.657 18.657z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1014.12 11.88l-4.242 4.242z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Gota</h3>
+                    </div>
+                    <p class="mt-4 text-gray-600">Manejo de ataques agudos y estrategias a largo plazo para prevenir la recurrencia y el daño articular.</p>
+                </div>
+                <div class="group relative bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-blue-100 text-blue-600 rounded-lg h-12 w-12 flex-shrink-0 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 14l9-5-9-5-9 5 9 5z" /><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-5.998 12.078 12.078 0 01.665-6.479L12 14z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-5.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222 4 2.222V20" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Osteoporosis</h3>
+                    </div>
+                    <p class="mt-4 text-gray-600">Evaluación del riesgo, diagnóstico y tratamiento para fortalecer los huesos y prevenir fracturas.</p>
+                </div>
+                <div class="group relative bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-blue-100 text-blue-600 rounded-lg h-12 w-12 flex-shrink-0 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Fibromialgia</h3>
+                    </div>
+                    <p class="mt-4 text-gray-600">Enfoque multidisciplinario para el manejo del dolor crónico, la fatiga y otros síntomas asociados.</p>
+                </div>
+                <div class="group relative bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-blue-100 text-blue-600 rounded-lg h-12 w-12 flex-shrink-0 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Otras Condiciones</h3>
+                    </div>
+                    <p class="mt-4 text-gray-600">Atención para espondiloartritis, vasculitis, esclerodermia y más. Consulta para una evaluación completa.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Contacto rediseñada -->
+    <section id="contacto" class="py-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900">Agenda tu Cita</h2>
+                <p class="mt-3 text-lg text-gray-600">Elige la opción que prefieras para comunicarte. ¡Será un placer atenderte!</p>
+            </div>
+            
+            <!-- Bookly Integration Section -->
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 mb-12">
+                <a href="reservations.html" class="block bg-white p-8 rounded-xl shadow-lg text-center hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group">
+                    <h3 class="text-2xl font-bold text-blue-700">Sistema de Reservas</h3>
+                    <p class="mt-2 text-gray-600">Agenda tu cita directamente en nuestro sistema online de forma rápida y segura.</p>
+                    <div class="mt-6 bg-blue-600 text-white font-semibold px-8 py-3 rounded-full group-hover:bg-blue-700 transition-all duration-300 transform group-hover:scale-105 inline-block">Reservar Ahora</div>
+                </a>
+                <a href="https://wa.me/5213121945752" target="_blank" rel="noopener noreferrer" class="block bg-white p-8 rounded-xl shadow-lg text-center hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group">
+                    <h3 class="text-2xl font-bold text-green-600">WhatsApp</h3>
+                    <p class="mt-2 text-gray-600">Envía un mensaje directo para solicitar información o agendar tu consulta.</p>
+                    <div class="mt-6 bg-green-500 text-white font-semibold px-8 py-3 rounded-full group-hover:bg-green-600 transition-all duration-300 transform group-hover:scale-105 inline-block">Enviar Mensaje</div>
+                </a>
+            </div>
+
+            <div class="mt-16 text-center">
+                <h3 class="text-2xl font-semibold text-gray-800">Ubicación del Consultorio</h3>
+                <p class="text-lg text-gray-600 mt-2">Avenida la Paz 46 - 2, 28017 Colima COL, México</p>
+                <div class="mt-6 rounded-2xl shadow-xl overflow-hidden h-96 border-4 border-white">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3766.3964160468295!2d-103.71536962478991!3d19.26511978197882!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x84255ac6c3d2648d%3A0xf047905c28fbac4f!2sAv%20La%20Paz%2046-2%2C%20Sta%20B%C3%A1rbara%2C%2028017%20Colima%2C%20Col.!5e0!3m2!1sen!2smx!4v1760462357807!5m2!1sen!2smx" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-6 text-center">
+        <p class="text-lg">&copy; 2025 Dra. María Amparo Enríquez Maldonado - Reumatóloga.</p>
+        <p>Todos los derechos reservados.</p>
+        <p class="text-sm text-gray-400 mt-4">Sitio web diseñado con fines informativos. La información aquí presentada no sustituye una consulta médica.</p>
+    </div>
+</footer>
+
+<!-- Chatbot rediseñado con paleta azul -->
+<div id="chatbot-container" class="fixed bottom-5 right-5 z-50">
+    <button id="chatbot-toggle" class="bg-blue-600 text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:bg-blue-700 transition-transform transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 transition-transform duration-300" id="chat-icon-open" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden transition-transform duration-300" id="chat-icon-close" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+    </button>
+    <div id="chat-window" class="hidden absolute bottom-24 right-0 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl flex flex-col border border-gray-200" style="height: 500px;">
+        <div class="bg-blue-600 text-white p-4 rounded-t-2xl">
+            <h3 class="font-bold text-lg">Asistente Virtual</h3>
+            <p class="text-sm opacity-90">¿Cómo puedo ayudarte? (No doy consejos médicos)</p>
+        </div>
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto"></div>
+        <div class="p-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+            <div id="chat-options" class="mb-3 flex flex-wrap gap-2"></div>
+            <div class="flex">
+                <input type="text" id="chat-input" placeholder="Escribe tu pregunta..." class="w-full px-4 py-2 border border-gray-300 rounded-l-full focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <button id="chat-send" class="bg-blue-600 text-white px-4 rounded-r-full hover:bg-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Lógica del Menú Móvil ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        document.querySelectorAll('#mobile-menu a, #header a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (!link.href.includes('reservations.html')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+
+        // --- Lógica de Animación al Hacer Scroll ---
+        const sections = document.querySelectorAll('.fade-in-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        sections.forEach(section => observer.observe(section));
+
+        // --- Lógica del Chatbot ---
+        const chatbotToggle = document.getElementById('chatbot-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        const messagesContainer = document.getElementById('chat-messages');
+        const chatOptionsContainer = document.getElementById('chat-options');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const openIcon = document.getElementById('chat-icon-open');
+        const closeIcon = document.getElementById('chat-icon-close');
+
+        const API_URL = 'https://mpwzml63ql.execute-api.us-east-1.amazonaws.com';
+
+        chatbotToggle.addEventListener('click', () => {
+            const isHidden = chatWindow.classList.toggle('hidden');
+            openIcon.classList.toggle('hidden', !isHidden);
+            closeIcon.classList.toggle('hidden', isHidden);
+            if (!isHidden) {
+                displayInitialMessage();
+            }
+        });
+
+        function displayInitialMessage() {
+            if (messagesContainer.children.length === 0) {
+                addBotMessage("¡Hola! Soy el asistente virtual de la Dra. María Amparo Enríquez Maldonado. ¿En qué puedo ayudarte?");
+                showQuickReplies();
+            }
+        }
+
+        function showQuickReplies() {
+            chatOptionsContainer.innerHTML = `
+                <button onclick="sendQuickReply('¿Cómo puedo agendar una cita?')" class="bg-blue-100 text-blue-800 text-sm px-3 py-1.5 rounded-full hover:bg-blue-200 transition-colors">¿Cómo agendar cita?</button>
+                <button onclick="sendQuickReply('¿Dónde se ubican?')" class="bg-blue-100 text-blue-800 text-sm px-3 py-1.5 rounded-full hover:bg-blue-200 transition-colors">¿Dónde se ubican?</button>
+                <button onclick="sendQuickReply('¿Cuál es el horario?')" class="bg-blue-100 text-blue-800 text-sm px-3 py-1.5 rounded-full hover:bg-blue-200 transition-colors">¿Cuál es el horario?</button>
+                <button onclick="sendQuickReply('¿Qué padecimientos atiende?')" class="bg-blue-100 text-blue-800 text-sm px-3 py-1.5 rounded-full hover:bg-blue-200 transition-colors">¿Qué padecimientos?</button>
+            `;
+        }
+
+        async function sendQuickReply(message) {
+            await sendMessage(message);
+        }
+
+        async function sendMessage(message) {
+            if (!message.trim()) return;
+
+            addUserMessage(message);
+            chatInput.value = '';
+            chatOptionsContainer.innerHTML = '<p class="text-xs text-gray-500 w-full text-center">Escribiendo...</p>';
+
+            try {
+                const response = await fetch(`${API_URL}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addBotMessage(data.response);
+                } else {
+                    addBotMessage('Lo siento, hubo un error. Por favor intenta de nuevo.');
+                }
+            } catch (error) {
+                addBotMessage('Error de conexión. Por favor verifica tu internet.');
+            }
+
+            showQuickReplies();
+        }
+
+        chatSend.addEventListener('click', () => sendMessage(chatInput.value));
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage(chatInput.value);
+        });
+
+        function addMessage(content, sender) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `w-full flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-bubble max-w-xs md:max-w-sm mb-3 rounded-2xl py-2 px-4 ${
+                sender === 'bot'
+                    ? 'bg-gray-200 text-gray-800 rounded-bl-none'
+                    : 'bg-blue-600 text-white rounded-br-none'
+            }`;
+            messageDiv.innerHTML = content;
+
+            messageWrapper.appendChild(messageDiv);
+            messagesContainer.appendChild(messageWrapper);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addBotMessage(content) {
+            addMessage(content, 'bot');
+        }
+
+        function addUserMessage(content) {
+            addMessage(content, 'user');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+[
+  {
+    "id": "1759519016746iapqrnfc3",
+    "firstName": "Juan",
+    "lastName": "Pérez",
+    "phone": "3121234567",
+    "email": "juan@example.com",
+    "preferredDate": "2025-10-10T00:00:00.000Z",
+    "preferredTime": "10:00",
+    "reason": "Dolor en articulaciones",
+    "consultationType": "primera-vez",
+    "status": "pending",
+    "createdAt": "2025-10-03T19:16:56.746Z"
+  }
+]

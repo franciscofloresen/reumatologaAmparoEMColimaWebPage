@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración de Citas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="min-h-screen">
+        <header class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Gestión de Citas</h1>
+                    <p class="text-gray-600">Dra. María Amparo Enríquez Maldonado</p>
+                </div>
+                <button onclick="logout()" class="text-red-600 hover:text-red-800">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 py-8">
+            <div class="mb-6 flex justify-between items-center">
+                <div class="flex space-x-4">
+                    <button onclick="filterAppointments('all')" class="filter-btn bg-blue-600 text-white px-4 py-2 rounded-md">Todas</button>
+                    <button onclick="filterAppointments('confirmed')" class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-md">Confirmadas</button>
+                    <button onclick="filterAppointments('completed')" class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-md">Completadas</button>
+                    <button onclick="filterAppointments('cancelled')" class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-md">Canceladas</button>
+                </div>
+                <button onclick="loadAppointments()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">🔄 Actualizar</button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha/Hora</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Paciente</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contacto</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsTable" class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Appointment Details Modal -->
+    <div id="appointmentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg max-w-2xl mx-4 w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">Detalles de la Cita</h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <div id="appointmentDetails" class="space-y-4"></div>
+            <div class="mt-6 flex space-x-4">
+                <button onclick="updateStatus('completed')" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">✓ Completar</button>
+                <button onclick="updateStatus('cancelled')" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">✗ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://mpwzml63ql.execute-api.us-east-1.amazonaws.com';
+        
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag]));
+        }
+
+        function getAuthHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('idToken')
+            };
+        }
+
+        let appointments = [];
+        let currentFilter = 'all';
+        let selectedAppointment = null;
+
+        // Cognito session validation — redirect to login.html if not authenticated
+        (function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            const accessToken = sessionStorage.getItem('accessToken');
+            if (!isLoggedIn || !accessToken) {
+                window.location.href = 'login.html';
+                return;
+            }
+            // Session is valid, load appointments
+            loadAppointments();
+        })();
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('accessToken');
+            sessionStorage.removeItem('idToken');
+            window.location.href = 'login.html';
+        }
+
+        async function loadAppointments() {
+            try {
+                const response = await fetch(`${API_URL}/appointments`, { headers: getAuthHeaders() });
+                
+                if (response.status === 401 || response.status === 403) {
+                    logout();
+                    return;
+                }
+
+                if (response.ok) {
+                    appointments = await response.json();
+                    displayAppointments();
+                }
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+            }
+        }
+
+        function displayAppointments() {
+            const tbody = document.getElementById('appointmentsTable');
+            const filtered = currentFilter === 'all' 
+                ? appointments 
+                : appointments.filter(apt => apt.status === currentFilter);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No hay citas</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.sort((a, b) => {
+                return new Date(a.preferredDate + ' ' + a.preferredTime) - new Date(b.preferredDate + ' ' + b.preferredTime);
+            }).map(apt => `
+                <tr class="hover:bg-gray-50 cursor-pointer" onclick='viewAppointment(${JSON.stringify(apt)})'>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${escapeHTML(apt.preferredDate)}</div>
+                        <div class="text-sm text-gray-500">${escapeHTML(apt.preferredTime)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${escapeHTML(apt.firstName)} ${escapeHTML(apt.lastName)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${escapeHTML(apt.phone)}</div>
+                        <div class="text-sm text-gray-500">${escapeHTML(apt.email) || 'N/A'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">${escapeHTML(apt.consultationType)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(apt.status)}">
+                            ${getStatusText(apt.status)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <button class="text-blue-600 hover:text-blue-900">Ver</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterAppointments(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = 'filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-md';
+            });
+            event.target.className = 'filter-btn bg-blue-600 text-white px-4 py-2 rounded-md';
+            displayAppointments();
+        }
+
+        function viewAppointment(apt) {
+            selectedAppointment = apt;
+            document.getElementById('appointmentDetails').innerHTML = `
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div><strong>ID:</strong> ${escapeHTML(apt.reservationId)}</div>
+                    <div><strong>Estado:</strong> <span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(apt.status)}">${getStatusText(apt.status)}</span></div>
+                    <div><strong>Nombre:</strong> ${escapeHTML(apt.firstName)} ${escapeHTML(apt.lastName)}</div>
+                    <div><strong>Teléfono:</strong> ${escapeHTML(apt.phone)}</div>
+                    <div><strong>Email:</strong> ${escapeHTML(apt.email) || 'No proporcionado'}</div>
+                    <div><strong>Fecha:</strong> ${escapeHTML(apt.preferredDate)}</div>
+                    <div><strong>Hora:</strong> ${escapeHTML(apt.preferredTime)}</div>
+                    <div><strong>Tipo:</strong> ${escapeHTML(apt.consultationType)}</div>
+                </div>
+                <div class="mt-4">
+                    <strong>Motivo:</strong>
+                    <p class="mt-2 p-3 bg-gray-50 rounded-md">${escapeHTML(apt.reason) || 'No especificado'}</p>
+                </div>
+                <div class="mt-4 text-xs text-gray-500">
+                    Creada: ${new Date(apt.createdAt).toLocaleString('es-MX')}
+                </div>
+            `;
+            document.getElementById('appointmentModal').classList.remove('hidden');
+        }
+
+        async function updateStatus(newStatus) {
+            if (!selectedAppointment) return;
+
+            try {
+                const response = await fetch(`${API_URL}/appointments/${selectedAppointment.reservationId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (response.ok) {
+                    closeModal();
+                    loadAppointments();
+                } else {
+                    alert('Error al actualizar el estado');
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('appointmentModal').classList.add('hidden');
+            selectedAppointment = null;
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'confirmed': 'bg-green-100 text-green-800',
+                'completed': 'bg-blue-100 text-blue-800',
+                'cancelled': 'bg-red-100 text-red-800'
+            };
+            return colors[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'confirmed': 'Confirmada',
+                'completed': 'Completada',
+                'cancelled': 'Cancelada'
+            };
+            return texts[status] || status;
+        }
+    </script>
+</body>
+</html>

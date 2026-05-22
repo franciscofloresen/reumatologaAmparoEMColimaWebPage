@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Dra. Enríquez</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.7/dist/amazon-cognito-identity.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-blue-800 mb-2">Panel de Administración</h1>
+            <p class="text-gray-600">Ingrese sus credenciales</p>
+        </div>
+        
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2">Usuario</label>
+                <input type="text" id="username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2">Contraseña</label>
+                <input type="password" id="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div id="newPasswordSection" class="hidden space-y-4">
+                <p class="text-sm text-amber-600">Debe cambiar su contraseña temporal</p>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Nueva Contraseña</label>
+                    <input type="password" id="newPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <p class="text-xs text-gray-500 mt-1">Mínimo 8 caracteres, mayúsculas, minúsculas, números y símbolos</p>
+                </div>
+            </div>
+            
+            <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg"></div>
+            
+            <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
+                Iniciar Sesión
+            </button>
+        </form>
+        
+        <div class="mt-6 text-center">
+            <a href="index.html" class="text-blue-600 hover:text-blue-800 transition-colors duration-300">
+                ← Volver al sitio principal
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const COGNITO_CONFIG = {
+            UserPoolId: 'us-east-1_hGBirkO13',
+            ClientId: '4dtd56c25lhboq0185p7iu2bbn'
+        };
+
+        const poolData = {
+            UserPoolId: COGNITO_CONFIG.UserPoolId,
+            ClientId: COGNITO_CONFIG.ClientId
+        };
+        const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+        let cognitoUser = null;
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            if (document.getElementById('newPasswordSection').classList.contains('hidden')) {
+                login(username, password);
+            } else {
+                completeNewPassword(newPassword);
+            }
+        });
+
+        function login(username, password) {
+            const authenticationData = {
+                Username: username,
+                Password: password,
+            };
+            const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+
+            const userData = {
+                Username: username,
+                Pool: userPool
+            };
+            cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+            cognitoUser.authenticateUser(authenticationDetails, {
+                onSuccess: function(result) {
+                    sessionStorage.setItem('accessToken', result.getAccessToken().getJwtToken());
+                    sessionStorage.setItem('idToken', result.getIdToken().getJwtToken());
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    window.location.href = 'admin.html';
+                },
+                onFailure: function(err) {
+                    showError(err.message || 'Error al iniciar sesión');
+                },
+                newPasswordRequired: function(userAttributes, requiredAttributes) {
+                    document.getElementById('newPasswordSection').classList.remove('hidden');
+                    document.getElementById('submitBtn').textContent = 'Cambiar Contraseña';
+                    showError('Debe cambiar su contraseña temporal');
+                }
+            });
+        }
+
+        function completeNewPassword(newPassword) {
+            if (!newPassword || newPassword.length < 8) {
+                showError('La contraseña debe tener al menos 8 caracteres');
+                return;
+            }
+
+            cognitoUser.completeNewPasswordChallenge(newPassword, {}, {
+                onSuccess: function(result) {
+                    sessionStorage.setItem('accessToken', result.getAccessToken().getJwtToken());
+                    sessionStorage.setItem('idToken', result.getIdToken().getJwtToken());
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    window.location.href = 'admin.html';
+                },
+                onFailure: function(err) {
+                    showError(err.message || 'Error al cambiar contraseña');
+                }
+            });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
